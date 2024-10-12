@@ -6,15 +6,17 @@ from django.template import loader
 from django.urls import reverse
 from .models import Question, Choice
 from django.views import generic
+from .forms import QuestionForm
+
 
 # Create your views here.
-class IndexView(generic.ListView):
+class IndexView(generic.ListView): 
     template_name = "polls/index.html"
     context_object_name = "latest_question_list"
 
     def get_queryset(self):
         """Return the last five published questions."""
-        return Question.objects.order_by("-pub_date")[:5]
+        return Question.objects.order_by("-pub_date")
 
 
 class DetailView(generic.DetailView):
@@ -43,3 +45,16 @@ def vote(request, question_id):
         selected_choice.votes = F("votes") + 1
         selected_choice.save()
         return HttpResponseRedirect(reverse("polls:results", args=(question_id,)))
+
+def question_form(request):
+    if request.method == "POST":
+        form = QuestionForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return HttpResponseRedirect(reverse("polls:index"))
+    else:
+        form = QuestionForm()  # Se inicializa el formulario en el else.
+
+    # Asegúrate de que el formulario siempre esté disponible en el contexto
+    return render(request, "polls/question_form.html", {'form': form})
+
