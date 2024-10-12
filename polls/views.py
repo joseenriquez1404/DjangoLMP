@@ -7,6 +7,7 @@ from django.urls import reverse
 from .models import Question, Choice
 from django.views import generic
 from .forms import QuestionForm
+from .forms import ChoiceForm
 
 
 # Create your views here.
@@ -57,4 +58,17 @@ def question_form(request):
 
     # Asegúrate de que el formulario siempre esté disponible en el contexto
     return render(request, "polls/question_form.html", {'form': form})
+
+def add_choice(request, question_id):
+    question = get_object_or_404(Question, pk=question_id)
+    if request.method == "POST":
+        form = ChoiceForm(request.POST)
+        if form.is_valid():
+            choice = form.save(commit=False)
+            choice.question = question
+            choice.save()
+            return HttpResponseRedirect(reverse('polls:index'))
+    else:
+        form = ChoiceForm()
+    return render(request, "polls/add_choice.html", {'form': form})
 

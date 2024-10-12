@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agregar Opción</title>
+</head>
+<body>
+
+<div class="container">
+    <h2>Agregar Opción para: {{ question.question_text }}</h2>
+    <form method="post">
+        {% csrf_token %}
+        <div>
+            {{ form.choice_text.label }} <!-- Etiqueta para el campo -->
+            {{ form.choice_text }} <!-- Campo de texto para la opción -->
+        </div>
+        <input type="submit" value="Agregar Opción">
+    </form>
+    <a href="{% url 'polls:index' %}">Volver a la lista de preguntas</a>
+</div>
+
+</body>
+</html>
